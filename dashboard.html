@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Supply Chain Optimization and Inventory Forecasting System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <link rel="stylesheet" href="/assets/css/dashboard_glass.css?v=20260402-02" />
+  <link rel="stylesheet" href="/assets/css/portfolio_dark_theme.css?v=20260402-02" />
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+</head>
+<body class="dashboard-layout dashboard-no-sidebar">
+  <div class="mesh-bg" aria-hidden="true"></div>
+
+  <main class="page-shell preload">
+    <section class="dashboard-topbar">
+      <div class="dashboard-branding">
+        <div class="dashboard-logo-mark">
+          <img class="dashboard-mini-icon" src="/assets/img/demandiq_icon.svg" alt="" aria-hidden="true" />
+        </div>
+        <div>
+          <p class="dashboard-top-label">Forecast Branch</p>
+          <h2 class="dashboard-top-title">Supply Chain Optimization and Inventory Forecasting System</h2>
+        </div>
+      </div>
+      <div class="dashboard-top-actions">
+        <div class="signed-in-card">
+          <div id="signedInAvatar" class="signed-in-avatar">U</div>
+          <div>
+            <p class="signed-in-label">Signed In</p>
+            <strong id="topUserName">Loading user...</strong>
+          </div>
+        </div>
+        <button id="topLogoutBtn" class="top-action-btn top-action-btn-danger" type="button">Logout</button>
+      </div>
+    </section>
+
+    <section class="dashboard-hero-card">
+      <div class="dashboard-hero-copy">
+        <p class="dashboard-eyebrow">Prediction Sub-Branch</p>
+        <h1>Forecast Workspace Dashboard</h1>
+        <p class="dashboard-hero-desc">Choose a category, city, store, and date range to generate demand projections, compare movement, and monitor inventory risk in one place.</p>
+        <p class="dashboard-hero-meta">Target Variable: <strong>Units Sold</strong></p>
+        <p id="roleHint" class="dashboard-hero-meta">Loading access level...</p>
+      </div>
+    </section>
+
+    <section id="forecastPanel" class="forecast-panel">
+      <article class="surface-card forecast-inputs">
+        <div class="date-grid">
+          <div class="field">
+            <label for="city">City</label>
+            <div class="select-shell" id="cityShell">
+              <select id="city" autocomplete="off" aria-hidden="true" tabindex="-1">
+                <option value="" selected disabled>Select city</option>
+              </select>
+              <button id="cityTrigger" class="category-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                <span id="cityTriggerText">Select city</span>
+              </button>
+              <div id="cityMenu" class="category-menu" role="listbox" aria-label="City options"></div>
+            </div>
+            <p id="cityMeta" class="field-meta">Loading available cities...</p>
+            <div id="cityError" class="field-error" role="alert" aria-live="polite"></div>
+          </div>
+          <div class="field">
+            <label for="store">Store</label>
+            <div class="select-shell" id="storeShell">
+              <select id="store" autocomplete="off" aria-hidden="true" tabindex="-1">
+                <option value="" selected disabled>Select store</option>
+              </select>
+              <button id="storeTrigger" class="category-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                <span id="storeTriggerText">Select store</span>
+              </button>
+              <div id="storeMenu" class="category-menu" role="listbox" aria-label="Store options"></div>
+            </div>
+            <p id="storeMeta" class="field-meta">Select a city to view all stores in that city.</p>
+            <div id="storeError" class="field-error" role="alert" aria-live="polite"></div>
+          </div>
+          <div class="field">
+            <label for="category">Category</label>
+            <div class="select-shell" id="categoryShell">
+              <select id="category" autocomplete="off" aria-hidden="true" tabindex="-1">
+                <option value="" selected disabled>Select category</option>
+              </select>
+              <button id="categoryTrigger" class="category-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                <span id="categoryTriggerText">Select category</span>
+              </button>
+              <div id="categoryMenu" class="category-menu" role="listbox" aria-label="Category options"></div>
+            </div>
+            <p id="categoryMeta" class="field-meta">Select a store to view available categories.</p>
+            <div id="categoryError" class="field-error" role="alert" aria-live="polite"></div>
+          </div>
+        </div>
+        <div class="date-grid">
+          <div class="field">
+            <label for="fromDate">From Date</label>
+            <input id="fromDate" type="text" autocomplete="off" placeholder="Select start date" />
+            <div id="fromDateError" class="field-error" role="alert" aria-live="polite"></div>
+          </div>
+          <div class="field">
+            <label for="toDate">To Date</label>
+            <input id="toDate" type="text" autocomplete="off" placeholder="Select end date" />
+            <div id="toDateError" class="field-error" role="alert" aria-live="polite"></div>
+          </div>
+        </div>
+        <button id="generateBtn" class="btn-primary" type="button">Generate Prediction</button>
+        <details id="debugPanel" class="field" style="margin-top:12px;">
+          <summary style="cursor:pointer;color:#6f8751;font-weight:700;">Debug Panel</summary>
+          <pre id="debugOutput" style="white-space:pre-wrap;word-break:break-word;font-size:12px;color:#6b7280;margin-top:10px;">Debug ready.</pre>
+        </details>
+      </article>
+
+      <article class="surface-card assistant-card" aria-label="Predicted assistant">
+        <h2>Predicted Assistant</h2>
+        <p class="assistant-copy">Pick a city, choose one of its stores, then select a category and from/to dates to generate projected demand.</p>
+        <div class="assistant-bars" aria-hidden="true">
+          <span style="height:22px;"></span>
+          <span style="height:34px;"></span>
+          <span style="height:28px;"></span>
+          <span style="height:46px;"></span>
+          <span style="height:44px;"></span>
+          <span style="height:56px;"></span>
+          <span style="height:52px;"></span>
+          <span style="height:66px;"></span>
+        </div>
+        <div class="assistant-points">
+          <div class="assistant-stat"><span>Average predicted</span><strong id="avgForecastKpi">-</strong></div>
+          <div class="assistant-stat"><span>Peak day</span><strong id="peakDayKpi">-</strong></div>
+          <div class="assistant-stat"><span>Risk level</span><strong id="riskLevelKpi">-</strong></div>
+        </div>
+        <canvas id="summarySparkline" class="assistant-sparkline" aria-label="Predicted summary sparkline"></canvas>
+        <p id="summaryHint" class="summary-hint">Summary updates when city, store, category, or date changes.</p>
+      </article>
+    </section>
+
+    <section id="forecastVisualization" class="surface-card viz-panel">
+      <article class="surface-card viz-card viz-card-wide">
+        <h3>All 15 Product Daily Trends</h3>
+        <div class="chart-wrap">
+          <canvas id="categoryComparisonChart" aria-label="Category demand comparison chart"></canvas>
+          <p id="categoryComparisonEmpty" class="chart-empty is-hidden">No product daily trend data available.</p>
+        </div>
+      </article>
+      <article class="surface-card viz-card viz-card-wide manual-trend-card">
+        <div class="manual-trend-head">
+          <div>
+            <h3>Manual Trend Compare</h3>
+            <p class="manual-trend-copy">Enter your own daily values to compare units sold and demand forecast in a clean manual trend view.</p>
+          </div>
+          <div class="manual-trend-actions">
+            <button id="manualTrendAddBtn" class="top-action-btn top-action-btn-primary" type="button">Add Point</button>
+            <button id="manualTrendClearBtn" class="top-action-btn" type="button">Clear</button>
+          </div>
+        </div>
+        <div class="manual-trend-grid">
+          <div class="manual-trend-form">
+            <div class="field">
+              <label for="manualTrendCategory">Category</label>
+              <select id="manualTrendCategory">
+                <option value="" selected>Select category</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="manualTrendDate">Date</label>
+              <input id="manualTrendDate" type="date" />
+            </div>
+            <div class="field">
+              <label for="manualTrendUnitsSold">Units Sold</label>
+              <input id="manualTrendUnitsSold" type="number" min="0" step="0.01" placeholder="Enter units sold" />
+            </div>
+            <div class="field">
+              <label for="manualTrendDemandForecast">Demand Forecast</label>
+              <input id="manualTrendDemandForecast" type="number" min="0" step="0.01" placeholder="Enter demand forecast" />
+            </div>
+            <div class="field">
+              <label for="manualTrendUnitsOrdered">Units Ordered</label>
+              <input id="manualTrendUnitsOrdered" type="number" min="0" step="0.01" placeholder="Enter units ordered" />
+            </div>
+            <div class="field">
+              <label for="manualTrendInventoryLevel">Inventory Level</label>
+              <input id="manualTrendInventoryLevel" type="number" min="0" step="0.01" placeholder="Enter inventory level" />
+            </div>
+            <div class="field">
+              <label for="manualTrendPrice">Price</label>
+              <input id="manualTrendPrice" type="number" min="0" step="0.01" placeholder="Enter price" />
+            </div>
+            <div class="field">
+              <label for="manualTrendDiscount">Discount</label>
+              <input id="manualTrendDiscount" type="number" min="0" step="0.01" placeholder="Enter discount" />
+            </div>
+          </div>
+          <div class="manual-trend-visuals">
+            <div class="metric-grid compact">
+              <div class="metric-row"><span>Manual Points</span><strong id="manualTrendCount">0</strong></div>
+              <div class="metric-row"><span>Manual Category</span><strong id="manualTrendCategoryValue">-</strong></div>
+              <div class="metric-row emphasize"><span>Compare Mode</span><strong>Units Sold vs Forecast</strong></div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="manualTrendChart" aria-label="Manual trend comparison chart"></canvas>
+              <p id="manualTrendEmpty" class="chart-empty">Add manual points to compare your trend.</p>
+            </div>
+            <div id="manualTrendList" class="manual-trend-list"></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="advancedAnalytics" class="analytics-stack">
+      <article class="surface-card analytics-card">
+        <h3>AI Predicted Insight</h3>
+        <p id="aiInsightText" class="analytics-text">Generate a prediction to view AI insight.</p>
+      </article>
+
+      <article class="surface-card analytics-card">
+        <h3>Reorder Recommendation</h3>
+        <div class="metric-grid">
+          <div class="metric-row"><span>Average Predicted Demand</span><strong id="avgDemandValue">-</strong></div>
+          <div class="metric-row"><span>Lead Time</span><strong id="leadTimeValue">5 days</strong></div>
+          <div class="metric-row"><span>Safety Stock</span><strong id="safetyStockValue">150 units</strong></div>
+          <div class="metric-row"><span>Suggested Reorder Point</span><strong id="reorderPointValue">-</strong></div>
+          <div class="metric-row emphasize"><span>Recommended Order Quantity</span><strong id="recommendedOrderValue">-</strong></div>
+        </div>
+      </article>
+
+      <article class="surface-card analytics-card inventory-alerts-card">
+        <h3>Inventory Alerts</h3>
+        <ul id="inventoryAlertsList" class="alerts-list">
+          <li class="alert-item safe">Inventory alerts will appear after prediction generation.</li>
+        </ul>
+        <div class="severity-points" aria-label="Alert severity counts">
+          <span class="severity-point critical"><span class="point-dot"></span>Critical <strong id="criticalCount">0</strong></span>
+          <span class="severity-point warning"><span class="point-dot"></span>Warning <strong id="warningCount">0</strong></span>
+          <span class="severity-point info"><span class="point-dot"></span>Info <strong id="infoCount">0</strong></span>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+  <footer class="page-footer">&copy; Supply Chain Optimization and Inventory Forecasting System</footer>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script defer src="/assets/js/dashboard_redesign.js?v=20260406-01"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Supply Chain Optimization and Inventory Forecasting System | Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/unified_theme.css?v=20260401-01" />
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: rgba(30, 41, 59, 0.12);
+      --line-soft: rgba(30, 41, 59, 0.08);
+      --accent: #2563eb;
+      --gold: #5b8def;
+      --glass: rgba(255, 255, 255, 0.94);
+      --glass-border: rgba(30, 41, 59, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", "Segoe UI", Tahoma, sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(180deg, #ffffff 0%, #f4f7fb 100%),
+        var(--bg);
+      animation: none;
+      padding: 20px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: none;
+    }
+
+    body::after {
+      content: none;
+    }
+
+    .scene {
+      display: none;
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    @keyframes gridDrift {
+      0% { background-position: 0 0, 0 0; }
+      100% { background-position: 180px 0, 0 140px; }
+    }
+
+    @keyframes tickerMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes chartDraw {
+      0% { stroke-dashoffset: 1200; opacity: 0.45; }
+      70% { stroke-dashoffset: 0; opacity: 0.92; }
+      100% { stroke-dashoffset: 0; opacity: 0.92; }
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.95; }
+      50% { transform: translate(-6px, -2px) scale(1.2); opacity: 1; }
+    }
+
+    @keyframes barGrow {
+      0%, 100% { transform: scaleY(0.45); }
+      50% { transform: scaleY(1); }
+    }
+
+    @keyframes themeDrift {
+      0% { background-position: 0% 0%, 100% 0%, 50% 100%, 0 0; }
+      100% { background-position: 4% 2%, 96% 4%, 52% 96%, 0 0; }
+    }
+
+    .scene-grid-sweep {
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          to right,
+          rgba(96, 170, 236, 0.06) 0 1px,
+          transparent 1px 38px
+        ),
+        repeating-linear-gradient(
+          to bottom,
+          rgba(96, 170, 236, 0.05) 0 1px,
+          transparent 1px 34px
+        );
+      animation: gridDrift 30s linear infinite;
+      opacity: 0.16;
+    }
+
+    .realtime-chart {
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      width: min(1200px, 96vw);
+      height: 330px;
+      transform: translate(-50%, -50%);
+      opacity: 0.24;
+      filter: drop-shadow(0 0 18px rgba(86, 186, 255, 0.26));
+    }
+
+    .realtime-chart svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .chart-path {
+      fill: none;
+      stroke: rgba(120, 220, 255, 0.88);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1200;
+      stroke-dashoffset: 1200;
+      animation: chartDraw 6.8s ease-out infinite;
+    }
+
+    .chart-area {
+      fill: url(#marketAreaFill);
+    }
+
+    .chart-dot {
+      fill: var(--gold);
+      filter: drop-shadow(0 0 8px rgba(255, 193, 111, 0.85));
+      transform-origin: center;
+      animation: pulseDot 2.2s ease-in-out infinite;
+    }
+
+    .center-bars {
+      position: absolute;
+      left: 50%;
+      bottom: 7%;
+      width: min(980px, 84vw);
+      height: 120px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 8px;
+      opacity: 0.14;
+    }
+
+    .center-bars span {
+      width: 10px;
+      height: 100%;
+      border-radius: 3px 3px 0 0;
+      background: linear-gradient(180deg, rgba(116, 209, 255, 0.95) 0%, rgba(64, 151, 236, 0.42) 100%);
+      transform-origin: bottom;
+      animation: barGrow 2.8s ease-in-out infinite;
+    }
+
+    .center-bars span:nth-child(2n) {
+      background: linear-gradient(180deg, rgba(255, 202, 125, 0.9) 0%, rgba(255, 161, 90, 0.38) 100%);
+    }
+
+    .center-bars span:nth-child(3n) { animation-delay: 0.2s; }
+    .center-bars span:nth-child(4n) { animation-delay: 0.45s; }
+    .center-bars span:nth-child(5n) { animation-delay: 0.7s; }
+    .center-bars span:nth-child(6n) { animation-delay: 0.95s; }
+
+    .shelf {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 24%;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.12) 0 2px,
+          transparent 2px 42px
+        ),
+        linear-gradient(180deg, rgba(157, 179, 205, 0.24), rgba(115, 137, 158, 0.28));
+      filter: blur(0.3px);
+      opacity: 0.42;
+    }
+
+    .shelf-left {
+      left: -2%;
+      transform: perspective(700px) rotateY(8deg);
+    }
+
+    .shelf-right {
+      right: -2%;
+      transform: perspective(700px) rotateY(-8deg);
+    }
+
+    .shelf::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0.12) 0 18px,
+          rgba(183, 202, 224, 0.08) 18px 26px
+        );
+      mix-blend-mode: screen;
+      opacity: 0.4;
+    }
+
+    .ai-brain {
+      position: absolute;
+      right: 7%;
+      top: 6%;
+      width: 360px;
+      height: 220px;
+      border-radius: 55% 45% 52% 48% / 56% 44% 58% 42%;
+      background:
+        radial-gradient(circle at 58% 46%, rgba(146, 224, 255, 0.95) 0 3px, transparent 4px),
+        radial-gradient(circle at 36% 55%, rgba(146, 224, 255, 0.72) 0 2px, transparent 3px),
+        radial-gradient(circle at 73% 64%, rgba(146, 224, 255, 0.68) 0 2px, transparent 3px),
+        repeating-linear-gradient(20deg, rgba(104, 203, 255, 0.3) 0 2px, transparent 2px 14px);
+      border: 1px solid rgba(101, 205, 255, 0.5);
+      box-shadow:
+        0 0 42px rgba(87, 194, 255, 0.42),
+        0 0 100px rgba(87, 194, 255, 0.26);
+      opacity: 0.42;
+      filter: blur(0.2px);
+    }
+
+    .chart-panel {
+      position: absolute;
+      right: 9%;
+      top: 34%;
+      width: 300px;
+      height: 190px;
+      border-radius: 14px;
+      border: 1px solid rgba(186, 206, 228, 0.22);
+      background:
+        linear-gradient(180deg, rgba(124, 143, 165, 0.34), rgba(97, 117, 140, 0.3)),
+        repeating-linear-gradient(
+          to right,
+          rgba(198, 217, 236, 0.12) 0 1px,
+          transparent 1px 34px
+        ),
+        repeating-linear-gradient(
+          to bottom,
+          rgba(198, 217, 236, 0.1) 0 1px,
+          transparent 1px 30px
+        );
+      box-shadow: 0 0 34px rgba(189, 208, 228, 0.12);
+      opacity: 0.5;
+    }
+
+    .chart-panel::before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 20px;
+      height: 94px;
+      background:
+        linear-gradient(to top, rgba(255, 187, 93, 0.45), rgba(255, 187, 93, 0)),
+        linear-gradient(to right, rgba(255, 200, 130, 0.15), rgba(108, 191, 255, 0.28));
+      clip-path: polygon(0% 94%, 12% 72%, 22% 76%, 34% 54%, 46% 58%, 57% 34%, 69% 40%, 81% 16%, 100% 6%, 100% 100%, 0% 100%);
+    }
+
+    .growth-bars {
+      position: absolute;
+      right: 6%;
+      bottom: 7%;
+      width: 250px;
+      height: 180px;
+      border-radius: 14px;
+      border: 1px solid rgba(186, 206, 228, 0.2);
+      background:
+        linear-gradient(180deg, rgba(107, 127, 150, 0.34), rgba(92, 111, 133, 0.4)),
+        repeating-linear-gradient(
+          to right,
+          rgba(198, 217, 236, 0.1) 0 1px,
+          transparent 1px 26px
+        );
+      box-shadow: 0 0 30px rgba(189, 208, 228, 0.12);
+      opacity: 0.46;
+    }
+
+    .growth-bars::before {
+      content: "";
+      position: absolute;
+      inset: 20px 18px 20px;
+      background:
+        repeating-linear-gradient(
+          to right,
+          rgba(73, 186, 255, 0.68) 0 14px,
+          transparent 14px 24px
+        );
+      clip-path: polygon(0% 100%, 0% 88%, 10% 88%, 10% 72%, 20% 72%, 20% 60%, 30% 60%, 30% 52%, 40% 52%, 40% 38%, 50% 38%, 50% 44%, 60% 44%, 60% 28%, 70% 28%, 70% 22%, 80% 22%, 80% 16%, 90% 16%, 90% 8%, 100% 8%, 100% 100%);
+    }
+
+    .robot-arm {
+      position: absolute;
+      left: -3%;
+      bottom: -4%;
+      width: 320px;
+      height: 270px;
+      border-radius: 48% 52% 0 0 / 58% 58% 0 0;
+      background:
+        linear-gradient(160deg, rgba(234, 164, 84, 0.4), rgba(70, 106, 168, 0.26)),
+        radial-gradient(circle at 62% 44%, rgba(98, 191, 255, 0.28), transparent 55%);
+      border: 1px solid rgba(156, 205, 255, 0.24);
+      filter: blur(0.3px);
+      opacity: 0.75;
+      transform: rotate(-10deg);
+    }
+
+    .center-hud {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 760px;
+      height: 460px;
+      transform: translate(-50%, -50%);
+      border-radius: 26px;
+      border: 1px solid rgba(99, 190, 255, 0.1);
+      background:
+        radial-gradient(460px 220px at 50% 48%, rgba(76, 175, 255, 0.1), transparent 68%),
+        repeating-linear-gradient(
+          to right,
+          rgba(96, 170, 236, 0.07) 0 1px,
+          transparent 1px 30px
+        ),
+        repeating-linear-gradient(
+          to bottom,
+          rgba(96, 170, 236, 0.06) 0 1px,
+          transparent 1px 26px
+        );
+      box-shadow:
+        0 0 60px rgba(76, 175, 255, 0.1),
+        inset 0 0 34px rgba(76, 175, 255, 0.06);
+      opacity: 0.2;
+    }
+
+    .center-hud::before {
+      content: "";
+      position: absolute;
+      left: 40px;
+      right: 40px;
+      top: 18px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(112, 190, 255, 0.45), transparent);
+    }
+
+    .center-hud::after {
+      content: "";
+      position: absolute;
+      left: 40px;
+      right: 40px;
+      bottom: 18px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(112, 190, 255, 0.45), transparent);
+    }
+
+    .center-trend {
+      position: absolute;
+      left: 50%;
+      top: 58%;
+      width: 720px;
+      height: 220px;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(
+        to top,
+        rgba(255, 188, 102, 0.22),
+        rgba(255, 188, 102, 0)
+      );
+      clip-path: polygon(0% 86%, 10% 72%, 22% 76%, 34% 52%, 47% 58%, 58% 35%, 71% 39%, 83% 18%, 100% 6%, 100% 100%, 0% 100%);
+      opacity: 0.28;
+      filter: drop-shadow(0 0 16px rgba(255, 188, 102, 0.18));
+    }
+
+    .center-trend::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(122, 209, 255, 0.16), rgba(255, 196, 120, 0.3));
+      clip-path: polygon(0% 86%, 10% 72%, 22% 76%, 34% 52%, 47% 58%, 58% 35%, 71% 39%, 83% 18%, 100% 6%, 100% 12%, 83% 24%, 71% 45%, 58% 41%, 47% 64%, 34% 58%, 22% 82%, 10% 78%, 0% 92%);
+    }
+
+    .center-nodes {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 760px;
+      height: 460px;
+      transform: translate(-50%, -50%);
+      background:
+        radial-gradient(circle at 13% 28%, rgba(99, 206, 255, 0.55) 0 3px, transparent 4px),
+        radial-gradient(circle at 26% 18%, rgba(99, 206, 255, 0.42) 0 2px, transparent 3px),
+        radial-gradient(circle at 74% 20%, rgba(255, 194, 113, 0.5) 0 3px, transparent 4px),
+        radial-gradient(circle at 88% 32%, rgba(99, 206, 255, 0.52) 0 3px, transparent 4px),
+        radial-gradient(circle at 18% 74%, rgba(255, 194, 113, 0.42) 0 3px, transparent 4px),
+        radial-gradient(circle at 82% 78%, rgba(99, 206, 255, 0.5) 0 3px, transparent 4px);
+      opacity: 0.14;
+    }
+
+    .mesh-bg {
+      position: fixed;
+      inset: -20%;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(620px 320px at 14% 8%, rgba(219, 234, 254, 0.12), transparent 70%),
+        radial-gradient(540px 300px at 88% 14%, rgba(96, 165, 250, 0.1), transparent 72%);
+      filter: blur(16px);
+    }
+
+    .login-card {
+      position: relative;
+      z-index: 4;
+      width: min(760px, 94vw);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 16px 36px rgba(120, 138, 88, 0.22);
+      padding: 40px 44px 34px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 10px;
+    }
+
+    .brand-icon {
+      width: 46px;
+      height: 46px;
+      display: block;
+      transform: none;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: clamp(22px, 4vw, 30px);
+      line-height: 1.08;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      color: #1f2937;
+    }
+
+    .brand-title .iq {
+      display: inline-block;
+      background: linear-gradient(90deg, #2563eb 0%, #5b8def 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    .subtitle {
+      margin: 8px 0 24px;
+      color: var(--muted);
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .field {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 54px;
+      padding: 0 16px;
+      border-radius: 14px;
+      border: 1px solid var(--line-soft);
+      background: rgba(248, 245, 235, 0.58);
+      color: #1f4f8a;
+      font-size: 17px;
+      font-family: inherit;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #5f84b8 50%),
+        linear-gradient(135deg, #5f84b8 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) calc(50% - 3px),
+        calc(100% - 12px) calc(50% - 3px);
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      padding-right: 34px;
+      color-scheme: light;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: rgba(96, 165, 250, 0.72);
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.16);
+    }
+    .input-error {
+      border-color: rgba(248, 113, 113, 0.92) !important;
+      box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.2) !important;
+      background: rgba(127, 29, 29, 0.16);
+    }
+    .field-error {
+      display: none;
+      margin-top: -2px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fca5a5;
+      line-height: 1.3;
+    }
+    .field-error.is-visible {
+      display: block;
+    }
+
+    .custom-select {
+      position: relative;
+    }
+
+    .custom-select-trigger {
+      width: 100%;
+      height: 54px;
+      padding: 0 40px 0 16px;
+      border-radius: 14px;
+      border: 1px solid var(--line-soft);
+      background: rgba(248, 245, 235, 0.58);
+      color: #1f4f8a;
+      font-size: 17px;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      position: relative;
+    }
+
+    .custom-select-trigger::after {
+      content: "";
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid #5f84b8;
+      border-bottom: 2px solid #5f84b8;
+      transform: translateY(-65%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    .custom-select-trigger.is-placeholder {
+      color: var(--muted);
+    }
+
+    .custom-select-menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 8px);
+      background: rgba(248, 245, 235, 0.94);
+      border: 1px solid rgba(96, 165, 250, 0.26);
+      border-radius: 12px;
+      box-shadow:
+        0 14px 28px rgba(120, 138, 88, 0.14),
+        0 0 0 1px rgba(96, 165, 250, 0.1) inset;
+      padding: 6px;
+      display: none;
+      z-index: 40;
+    }
+
+    .custom-select-menu.is-open {
+      display: block;
+    }
+
+    .custom-select-item {
+      width: 100%;
+      border: 1px solid rgba(96, 165, 250, 0.12);
+      background: transparent;
+      color: #1f4f8a;
+      text-align: left;
+      font-size: 14px;
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .custom-select-item:hover {
+      border-color: rgba(96, 165, 250, 0.24);
+      background: rgba(219, 234, 254, 0.18);
+    }
+
+    .native-role-select {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+      left: -9999px;
+      top: -9999px;
+    }
+
+    input::placeholder {
+      color: var(--muted);
+    }
+
+    /* Keep browser autofill aligned with dark theme. */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-text-fill-color: #1f4f8a;
+      box-shadow: 0 0 0px 1000px rgba(248, 245, 235, 0.96) inset;
+      transition: background-color 5000s ease-in-out 0s;
+      caret-color: #1f4f8a;
+    }
+
+    select option {
+      color: #1f4f8a;
+      background: #f8f5eb;
+    }
+
+    #role:invalid {
+      color: var(--muted);
+    }
+
+    #role option[value=""] {
+      color: var(--muted);
+    }
+
+    /* Avoid bright flash/glow on role dropdown focus. */
+    #role {
+      transition: none;
+      -webkit-tap-highlight-color: transparent;
+      color-scheme: light;
+      background-color: rgba(248, 245, 235, 0.94);
+    }
+
+    #role:focus,
+    #role:focus-visible {
+      outline: none;
+      border-color: var(--line-soft);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    /* Extra-hard override only for Create Account mode. */
+    #loginForm[data-mode="create"] #role,
+    #loginForm[data-mode="create"] #role:hover,
+    #loginForm[data-mode="create"] #role:focus,
+    #loginForm[data-mode="create"] #role:focus-visible,
+    #loginForm[data-mode="create"] #role:active {
+      outline: none !important;
+      border-color: var(--line-soft) !important;
+      box-shadow: none !important;
+      background: rgba(248, 245, 235, 0.94) !important;
+    }
+
+    .email-suggest-wrap {
+      position: relative;
+    }
+    .password-wrap {
+      position: relative;
+    }
+    .password-wrap input {
+      padding-right: 50px;
+    }
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: #5f84b8;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      padding: 0;
+    }
+    .password-toggle:hover {
+      color: #1f4f8a;
+      background: rgba(219, 234, 254, 0.18);
+    }
+    .password-toggle:focus-visible {
+      outline: 2px solid rgba(96, 165, 250, 0.55);
+      outline-offset: 1px;
+    }
+    .password-toggle svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .email-suggestions {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 8px);
+      z-index: 30;
+      background: linear-gradient(180deg, rgba(248, 245, 235, 0.94), rgba(240, 247, 255, 0.92));
+      border: 1px solid rgba(96, 165, 250, 0.24);
+      border-radius: 12px;
+      box-shadow: 0 14px 28px rgba(120, 138, 88, 0.14), 0 0 0 1px rgba(96, 165, 250, 0.08) inset;
+      max-height: none;
+      overflow: visible;
+      display: none;
+      padding: 6px;
+    }
+
+    .email-suggestions.is-open {
+      display: block;
+    }
+
+    .email-suggestion-item {
+      width: 100%;
+      border: 1px solid rgba(96, 165, 250, 0.12);
+      background: transparent;
+      color: #1f4f8a;
+      text-align: left;
+      font-size: 14px;
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .email-suggestion-item:hover {
+      border-color: rgba(96, 165, 250, 0.24);
+      background: rgba(219, 234, 254, 0.18);
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .row a {
+      color: #4f76ad;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .row a:hover { text-decoration: underline; }
+
+    .btn {
+      width: 100%;
+      height: 52px;
+      border: 1px solid rgba(37, 99, 235, 0.32);
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.96), rgba(91, 141, 239, 0.98));
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 700;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18) inset, 0 10px 22px rgba(37, 99, 235, 0.16);
+      cursor: pointer;
+      transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.02);
+      border-color: rgba(37, 99, 235, 0.44);
+      background: linear-gradient(135deg, rgba(49, 109, 239, 0.98), rgba(104, 151, 241, 0.98));
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22) inset, 0 12px 24px rgba(37, 99, 235, 0.18);
+    }
+
+    .sso-btn {
+      margin-top: 10px;
+      width: 100%;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--line-soft);
+      background: rgba(248, 245, 235, 0.88);
+      color: #1f4f8a;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32);
+      transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    }
+
+    .sso-btn:hover {
+      transform: scale(1.02);
+      border-color: rgba(96, 165, 250, 0.42);
+      background: rgba(219, 234, 254, 0.18);
+    }
+
+    .note {
+      margin-top: 20px;
+      font-size: 16px;
+      color: var(--muted);
+      text-align: center;
+    }
+    .role-help {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(248, 113, 113, 0.55);
+      background: rgba(127, 29, 29, 0.28);
+      color: #fecaca;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .role-help strong {
+      color: #fca5a5;
+    }
+    .auth-error {
+      margin-top: 14px;
+      color: #fca5a5;
+      font-size: 15px;
+      font-weight: 600;
+      min-height: 20px;
+      text-align: center;
+    }
+    .password-mask {
+      -webkit-text-security: disc;
+      text-security: disc;
+    }
+
+    .mode-switch {
+      margin: 6px 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .mode-btn {
+      height: 48px;
+      border-radius: 12px;
+      border: 1px solid var(--line-soft);
+      background: rgba(248, 245, 235, 0.88);
+      color: #4f76ad;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .mode-btn.active {
+      border-color: rgba(96, 165, 250, 0.46);
+      background: rgba(219, 234, 254, 0.28);
+      color: #1f4f8a;
+    }
+
+    .is-hidden {
+      display: none;
+    }
+    .footer {
+      margin-top: 14px;
+      font-size: 18px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .login-card {
+        width: min(560px, 100%);
+        padding: 28px 26px 24px;
+        border-radius: 16px;
+      }
+
+      .ai-brain,
+      .chart-panel,
+      .growth-bars,
+      .robot-arm,
+      .center-hud,
+      .center-trend,
+      .center-nodes,
+      .scene-grid-sweep,
+      .realtime-chart,
+      .center-bars {
+        display: none;
+      }
+
+      .brand-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .brand-title {
+        font-size: clamp(20px, 5vw, 26px);
+      }
+
+      .subtitle {
+        font-size: 16px;
+      }
+
+      input,
+      select,
+      .btn,
+      .sso-btn {
+        height: 46px;
+        font-size: 15px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/css/portfolio_dark_theme.css?v=20260402-02" />
+</head>
+<body class="login-theme">
+  <div class="scene" aria-hidden="true">
+    <div class="scene-grid-sweep"></div>
+    <div class="shelf shelf-left"></div>
+    <div class="shelf shelf-right"></div>
+    <div class="realtime-chart">
+      <svg viewBox="0 0 1200 330" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="marketAreaFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(112, 220, 255, 0.3)"></stop>
+            <stop offset="100%" stop-color="rgba(112, 220, 255, 0.02)"></stop>
+          </linearGradient>
+        </defs>
+        <path class="chart-area" d="M20,280 L90,262 L160,244 L235,250 L310,214 L386,224 L468,196 L548,202 L630,166 L716,176 L804,134 L892,146 L980,112 L1070,120 L1178,78 L1178,330 L20,330 Z"></path>
+        <path class="chart-path" d="M20,280 L90,262 L160,244 L235,250 L310,214 L386,224 L468,196 L548,202 L630,166 L716,176 L804,134 L892,146 L980,112 L1070,120 L1178,78"></path>
+        <circle class="chart-dot" cx="1178" cy="78" r="6"></circle>
+      </svg>
+    </div>
+    <div class="center-bars">
+      <span style="height:40%"></span><span style="height:52%"></span><span style="height:47%"></span><span style="height:60%"></span><span style="height:56%"></span><span style="height:68%"></span><span style="height:72%"></span><span style="height:66%"></span><span style="height:78%"></span><span style="height:84%"></span><span style="height:90%"></span><span style="height:86%"></span><span style="height:95%"></span><span style="height:100%"></span>
+    </div>
+    <div class="center-hud"></div>
+    <div class="center-trend"></div>
+    <div class="center-nodes"></div>
+    <div class="ai-brain"></div>
+    <div class="chart-panel"></div>
+    <div class="growth-bars"></div>
+    <div class="robot-arm"></div>
+  </div>
+  <div class="mesh-bg" aria-hidden="true"></div>
+  <main class="login-card">
+    <div class="brand">
+      <img class="brand-icon" src="/assets/img/demandiq_icon.svg" alt="" aria-hidden="true" />
+      <h1 class="brand-title">Supply Chain Optimization and Inventory Forecasting System</h1>
+    </div>
+    <p class="subtitle">Advanced inventory forecasting and supply chain planning</p>
+    <div class="mode-switch">
+      <button id="modeSignIn" class="mode-btn active" type="button">Sign In</button>
+      <button id="modeCreate" class="mode-btn" type="button">Create Account</button>
+    </div>
+
+    <form id="loginForm" autocomplete="off" novalidate>
+      <input
+        type="text"
+        name="browser_fake_username"
+        autocomplete="username"
+        tabindex="-1"
+        aria-hidden="true"
+        style="position:absolute;left:-9999px;opacity:0;pointer-events:none;width:1px;height:1px;"
+      />
+      <input
+        type="password"
+        name="browser_fake_password"
+        autocomplete="new-password"
+        tabindex="-1"
+        aria-hidden="true"
+        style="position:absolute;left:-9999px;opacity:0;pointer-events:none;width:1px;height:1px;"
+      />
+      <div class="field is-hidden" id="firstNameField">
+        <label for="firstName">First Name</label>
+        <input id="firstName" type="search" name="first_name_input" placeholder="Your first name" autocomplete="new-password" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" aria-autocomplete="none" data-lpignore="true" data-1p-ignore="true" data-form-type="other" readonly />
+        <p id="firstNameError" class="field-error" aria-live="polite"></p>
+      </div>
+      <div class="field is-hidden" id="lastNameField">
+        <label for="lastName">Last Name</label>
+        <input id="lastName" type="search" name="last_name_input" placeholder="Your last name" autocomplete="new-password" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" aria-autocomplete="none" data-lpignore="true" data-1p-ignore="true" data-form-type="other" readonly />
+        <p id="lastNameError" class="field-error" aria-live="polite"></p>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <div class="email-suggest-wrap">
+          <input
+            id="email"
+            name="contact_identifier"
+            type="text"
+            inputmode="email"
+            required
+            placeholder="name@gmail.com"
+            autocomplete="new-password"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+            data-lpignore="true"
+            data-1p-ignore="true"
+            data-form-type="other"
+            readonly
+          />
+          <div id="savedEmailList" class="email-suggestions" role="listbox" aria-label="Saved emails"></div>
+        </div>
+        <p id="emailError" class="field-error" aria-live="polite"></p>
+      </div>
+      <div class="field">
+        <label for="role">Role</label>
+        <div class="custom-select" id="roleSelectShell">
+          <button id="roleTrigger" class="custom-select-trigger is-placeholder" type="button" aria-haspopup="listbox" aria-expanded="false">Select Role</button>
+          <div id="roleMenu" class="custom-select-menu" role="listbox" aria-label="Role options"></div>
+          <select id="role" class="native-role-select" required tabindex="-1" aria-hidden="true">
+            <option value="" selected disabled>Select Role</option>
+            <option value="admin">Admin</option>
+            <option value="inventory_manager">Inventory Manager</option>
+            <option value="viewer">Viewer</option>
+          </select>
+        </div>
+        <p id="roleError" class="field-error" aria-live="polite"></p>
+        <p id="roleHelp" class="role-help is-hidden"><strong>Note:</strong> Admin accounts cannot be created here. Use Sign In with admin credentials.</p>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="password-wrap">
+          <input
+            id="password"
+            name="login_password_id"
+            type="text"
+            class="password-mask"
+            required
+            placeholder="Enter password"
+            autocomplete="off"
+            readonly
+            data-lpignore="true"
+            data-1p-ignore="true"
+            data-form-type="other"
+          />
+          <button id="togglePassword" class="password-toggle" type="button" aria-label="Show password" title="Show password">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+        <p id="passwordError" class="field-error" aria-live="polite"></p>
+      </div>
+      <div class="field is-hidden" id="confirmPasswordField">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="password-wrap">
+          <input id="confirmPassword" type="text" class="password-mask" placeholder="Re-enter password" autocomplete="new-password" />
+          <button id="toggleConfirmPassword" class="password-toggle" type="button" aria-label="Show confirm password" title="Show confirm password">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+        <p id="confirmPasswordError" class="field-error" aria-live="polite"></p>
+      </div>
+      <div class="row">
+        <label><input type="checkbox" id="rememberMe" style="height:auto;width:auto;" /> Remember me</label>
+      </div>
+      <button class="btn" id="submitBtn" type="submit">Sign In</button>
+      <div class="auth-error" id="authError" aria-live="polite"></div>
+    </form>
+
+    <p class="note">Authorized users only. Activity is monitored.</p>
+    <p class="note">Each user must create and use their own email and password. Credentials are private to that account.</p>
+    <p class="footer">&#169; 2026 Supply Chain Optimization and Inventory Forecasting System</p>
+  </main>
+
+  <script>
+    const loginForm = document.getElementById("loginForm");
+    const emailEl = document.getElementById("email");
+    const roleEl = document.getElementById("role");
+    const passwordEl = document.getElementById("password");
+    const firstNameEl = document.getElementById("firstName");
+    const lastNameEl = document.getElementById("lastName");
+    const confirmPasswordEl = document.getElementById("confirmPassword");
+    const rememberMeEl = document.getElementById("rememberMe");
+    const authErrorEl = document.getElementById("authError");
+    const modeSignInBtn = document.getElementById("modeSignIn");
+    const modeCreateBtn = document.getElementById("modeCreate");
+    const firstNameField = document.getElementById("firstNameField");
+    const lastNameField = document.getElementById("lastNameField");
+    const confirmPasswordField = document.getElementById("confirmPasswordField");
+    const submitBtn = document.getElementById("submitBtn");
+    const savedEmailListEl = document.getElementById("savedEmailList");
+    const roleSelectShellEl = document.getElementById("roleSelectShell");
+    const roleTriggerEl = document.getElementById("roleTrigger");
+    const roleMenuEl = document.getElementById("roleMenu");
+    const togglePasswordBtn = document.getElementById("togglePassword");
+    const toggleConfirmPasswordBtn = document.getElementById("toggleConfirmPassword");
+    const firstNameErrorEl = document.getElementById("firstNameError");
+    const lastNameErrorEl = document.getElementById("lastNameError");
+    const emailErrorEl = document.getElementById("emailError");
+    const roleErrorEl = document.getElementById("roleError");
+    const passwordErrorEl = document.getElementById("passwordError");
+    const confirmPasswordErrorEl = document.getElementById("confirmPasswordError");
+    const SAVED_LOGIN_PROFILES_KEY = "demandiq_saved_login_profiles_v1";
+    const LOGIN_CLEAR_AFTER_LOGOUT_KEY = "demandiq_clear_login_after_logout_v1";
+    const MAX_SAVED_LOGIN_PROFILES = 12;
+    const STRONG_PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+    const STRONG_PASSWORD_MESSAGE = "Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special character.";
+    const ROLE_OPTIONS_SIGNIN = `
+      <option value="" selected disabled>Select Role</option>
+      <option value="admin">Admin</option>
+      <option value="inventory_manager">Inventory Manager</option>
+      <option value="viewer">Viewer</option>
+    `;
+    const ROLE_OPTIONS_CREATE = `
+      <option value="" selected disabled hidden>Select Role</option>
+      <option value="inventory_manager">Inventory Manager</option>
+      <option value="viewer">Viewer</option>
+    `;
+    let authMode = "signin";
+    let liveAccountSuggestions = [];
+
+    function clearSavedLoginProfiles() {
+      try {
+        localStorage.removeItem(SAVED_LOGIN_PROFILES_KEY);
+      } catch (_) {
+        // Ignore storage access failures.
+      }
+    }
+
+    function loadSavedLoginProfiles() {
+      return [];
+    }
+
+    function saveLoginProfiles() {
+      clearSavedLoginProfiles();
+    }
+
+    function upsertSavedLoginProfile() {
+      clearSavedLoginProfiles();
+      renderSavedEmailSuggestions();
+    }
+
+    function closeSavedEmailSuggestions() {
+      if (!savedEmailListEl) return;
+      savedEmailListEl.classList.remove("is-open");
+    }
+
+    function closeRoleMenu() {
+      if (!roleMenuEl || !roleTriggerEl) return;
+      roleMenuEl.classList.remove("is-open");
+      roleTriggerEl.setAttribute("aria-expanded", "false");
+    }
+
+    function syncRoleTriggerText() {
+      if (!roleTriggerEl || !roleEl) return;
+      const selected = roleEl.options[roleEl.selectedIndex];
+      const label = selected && selected.value ? selected.textContent : "Select Role";
+      roleTriggerEl.textContent = label;
+      roleTriggerEl.classList.toggle("is-placeholder", !selected || !selected.value);
+    }
+
+    function renderRoleMenu() {
+      if (!roleMenuEl || !roleEl) return;
+      const options = Array.from(roleEl.options).filter((opt) => opt.value);
+      roleMenuEl.innerHTML = options
+        .map((opt) => `<button type="button" class="custom-select-item" data-value="${opt.value}">${opt.text}</button>`)
+        .join("");
+    }
+
+    async function renderSavedEmailSuggestions(filterText = "") {
+      if (!savedEmailListEl) return;
+      if (authMode !== "signin") {
+        savedEmailListEl.innerHTML = "";
+        liveAccountSuggestions = [];
+        closeSavedEmailSuggestions();
+        return;
+      }
+      try {
+        const q = String(filterText || "").trim();
+        const resp = await fetch(`/auth/account-suggestions?q=${encodeURIComponent(q)}&limit=12`, {
+          cache: "no-store",
+        });
+        if (!resp.ok) {
+          savedEmailListEl.innerHTML = "";
+          liveAccountSuggestions = [];
+          closeSavedEmailSuggestions();
+          return;
+        }
+        const data = await resp.json();
+        const accounts = Array.isArray(data?.accounts) ? data.accounts : [];
+        liveAccountSuggestions = accounts
+          .map((a) => ({
+            email: String(a?.email || "").trim().toLowerCase(),
+            role: String(a?.role || "").trim(),
+          }))
+          .filter((a) => a.email);
+
+        if (!liveAccountSuggestions.length) {
+          savedEmailListEl.innerHTML = "";
+          closeSavedEmailSuggestions();
+          return;
+        }
+
+        savedEmailListEl.innerHTML = liveAccountSuggestions
+          .map((a) => `<button type="button" class="email-suggestion-item" data-email="${a.email.replaceAll('"', "&quot;")}" data-role="${a.role.replaceAll('"', "&quot;")}">${a.email}</button>`)
+          .join("");
+        savedEmailListEl.classList.add("is-open");
+      } catch (_) {
+        savedEmailListEl.innerHTML = "";
+        liveAccountSuggestions = [];
+        closeSavedEmailSuggestions();
+      }
+    }
+
+    function applySavedProfile(emailInput) {
+      if (authMode !== "signin") return;
+      const typed = String(emailInput || "").trim().toLowerCase();
+      if (!typed) return;
+      const match = liveAccountSuggestions.find((p) => p.email === typed);
+      if (!match) return;
+      if (match.role) {
+        roleEl.value = match.role;
+        syncRoleTriggerText();
+      }
+    }
+
+    async function ensureAuthState() {
+      try {
+        const resp = await fetch("/auth/me", {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+        });
+        // Keep login page as the landing page even when a valid session exists.
+      } catch (_) {
+        // Keep user on login page if auth check fails.
+      }
+    }
+
+    function setFormDisabled(disabled) {
+      Array.from(loginForm.elements).forEach((el) => {
+        el.disabled = disabled;
+      });
+      modeSignInBtn.disabled = disabled;
+      modeCreateBtn.disabled = disabled;
+      if (roleTriggerEl) roleTriggerEl.disabled = disabled;
+    }
+
+    function clearFieldErrors() {
+      firstNameErrorEl.textContent = "";
+      lastNameErrorEl.textContent = "";
+      emailErrorEl.textContent = "";
+      roleErrorEl.textContent = "";
+      passwordErrorEl.textContent = "";
+      confirmPasswordErrorEl.textContent = "";
+      firstNameErrorEl.classList.remove("is-visible");
+      lastNameErrorEl.classList.remove("is-visible");
+      emailErrorEl.classList.remove("is-visible");
+      roleErrorEl.classList.remove("is-visible");
+      passwordErrorEl.classList.remove("is-visible");
+      confirmPasswordErrorEl.classList.remove("is-visible");
+      [emailEl, roleEl, passwordEl, firstNameEl, lastNameEl, confirmPasswordEl].forEach((el) => {
+        if (!el) return;
+        el.classList.remove("input-error");
+      });
+      if (roleTriggerEl) roleTriggerEl.classList.remove("input-error");
+    }
+
+    function fieldErrorElFor(fieldId) {
+      if (fieldId === "firstName") return firstNameErrorEl;
+      if (fieldId === "lastName") return lastNameErrorEl;
+      if (fieldId === "email") return emailErrorEl;
+      if (fieldId === "role") return roleErrorEl;
+      if (fieldId === "password") return passwordErrorEl;
+      if (fieldId === "confirmPassword") return confirmPasswordErrorEl;
+      return null;
+    }
+
+    function markFieldError(el, message) {
+      if (!el) return;
+      el.classList.add("input-error");
+      if (el === roleEl && roleTriggerEl) roleTriggerEl.classList.add("input-error");
+      const targetErrorEl = fieldErrorElFor(el.id);
+      if (!targetErrorEl) return;
+      targetErrorEl.textContent = message || "Invalid value.";
+      targetErrorEl.classList.add("is-visible");
+    }
+
+    function clearSingleFieldError(el) {
+      if (!el) return;
+      el.classList.remove("input-error");
+      if (el === roleEl && roleTriggerEl) roleTriggerEl.classList.remove("input-error");
+      const targetErrorEl = fieldErrorElFor(el.id);
+      if (!targetErrorEl) return;
+      targetErrorEl.textContent = "";
+      targetErrorEl.classList.remove("is-visible");
+    }
+
+    function clearCredentialFields() {
+      emailEl.value = "";
+      passwordEl.value = "";
+      confirmPasswordEl.value = "";
+      firstNameEl.value = "";
+      lastNameEl.value = "";
+      rememberMeEl.checked = false;
+      roleEl.selectedIndex = 0;
+      authErrorEl.textContent = "";
+      closeSavedEmailSuggestions();
+      savedEmailListEl.innerHTML = "";
+      liveAccountSuggestions = [];
+    }
+
+    function consumeLogoutClearFlag() {
+      let shouldClear = false;
+      try {
+        shouldClear = sessionStorage.getItem(LOGIN_CLEAR_AFTER_LOGOUT_KEY) === "1";
+        if (shouldClear) {
+          sessionStorage.removeItem(LOGIN_CLEAR_AFTER_LOGOUT_KEY);
+        }
+      } catch (_) {
+        // Ignore storage access issues.
+      }
+      const url = new URL(window.location.href);
+      const hasLoggedOutParam = url.searchParams.get("logged_out") === "1";
+      if (hasLoggedOutParam) {
+        url.searchParams.delete("logged_out");
+        const nextQuery = url.searchParams.toString();
+        window.history.replaceState({}, "", `${url.pathname}${nextQuery ? `?${nextQuery}` : ""}`);
+      }
+      return shouldClear || hasLoggedOutParam;
+    }
+
+    function setMode(mode) {
+      authMode = mode === "create" ? "create" : "signin";
+      const createMode = authMode === "create";
+      loginForm.setAttribute("data-mode", authMode);
+      const roleHelp = document.getElementById("roleHelp");
+      const previousRole = String(roleEl.value || "").trim();
+      // Keep browser popup suppression in both modes.
+      if (createMode) {
+        // Strong anti-autofill profile for create mode.
+        emailEl.setAttribute("name", `create_contact_${Date.now()}`);
+        emailEl.setAttribute("autocomplete", "one-time-code");
+        emailEl.setAttribute("type", "search");
+        emailEl.setAttribute("inputmode", "text");
+        firstNameEl.setAttribute("name", `create_first_${Date.now()}`);
+        firstNameEl.setAttribute("autocomplete", "new-password");
+        firstNameEl.setAttribute("type", "search");
+        firstNameEl.setAttribute("inputmode", "text");
+        firstNameEl.setAttribute("readonly", "readonly");
+        lastNameEl.setAttribute("name", `create_last_${Date.now()}`);
+        lastNameEl.setAttribute("autocomplete", "new-password");
+        lastNameEl.setAttribute("type", "search");
+        lastNameEl.setAttribute("inputmode", "text");
+        lastNameEl.setAttribute("readonly", "readonly");
+      } else {
+        emailEl.setAttribute("name", "contact_identifier");
+        emailEl.setAttribute("autocomplete", "new-password");
+        emailEl.setAttribute("type", "text");
+        emailEl.setAttribute("inputmode", "email");
+        firstNameEl.setAttribute("name", "first_name_input");
+        firstNameEl.setAttribute("autocomplete", "off");
+        firstNameEl.setAttribute("type", "text");
+        firstNameEl.setAttribute("inputmode", "text");
+        firstNameEl.removeAttribute("readonly");
+        lastNameEl.setAttribute("name", "last_name_input");
+        lastNameEl.setAttribute("autocomplete", "off");
+        lastNameEl.setAttribute("type", "text");
+        lastNameEl.setAttribute("inputmode", "text");
+        lastNameEl.removeAttribute("readonly");
+      }
+      emailEl.setAttribute("readonly", "readonly");
+      closeSavedEmailSuggestions();
+      roleEl.innerHTML = createMode ? ROLE_OPTIONS_CREATE : ROLE_OPTIONS_SIGNIN;
+      if (createMode && (previousRole === "inventory_manager" || previousRole === "viewer")) {
+        roleEl.value = previousRole;
+      } else if (!createMode && (previousRole === "admin" || previousRole === "inventory_manager" || previousRole === "viewer")) {
+        roleEl.value = previousRole;
+      } else {
+        roleEl.value = "";
+      }
+      modeSignInBtn.classList.toggle("active", !createMode);
+      modeCreateBtn.classList.toggle("active", createMode);
+      firstNameField.classList.toggle("is-hidden", !createMode);
+      lastNameField.classList.toggle("is-hidden", !createMode);
+      confirmPasswordField.classList.toggle("is-hidden", !createMode);
+      roleHelp.classList.toggle("is-hidden", !(createMode && roleEl.value === "admin"));
+      submitBtn.textContent = createMode ? "Create Account" : "Sign In";
+      authErrorEl.textContent = "";
+      clearFieldErrors();
+      renderRoleMenu();
+      syncRoleTriggerText();
+      closeRoleMenu();
+    }
+
+    function setPasswordToggleIcon(buttonEl, isVisible) {
+      if (!buttonEl) return;
+      buttonEl.innerHTML = isVisible
+        ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"></path><path d="M10.6 10.6a3 3 0 0 0 4.24 4.24"></path><path d="M9.88 5.08A10.8 10.8 0 0 1 12 4.8c6.5 0 10 6 10 6a18.3 18.3 0 0 1-3.32 3.92"></path><path d="M6.7 6.7C3.94 8.36 2 10.8 2 10.8s3.5 6 10 6c1.84 0 3.42-.48 4.78-1.18"></path></svg>`
+        : `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    }
+
+    function wirePasswordToggle(buttonEl, inputEl, usesMaskClass = false) {
+      if (!buttonEl || !inputEl) return;
+      setPasswordToggleIcon(buttonEl, false);
+      buttonEl.addEventListener("click", () => {
+        if (inputEl.hasAttribute("readonly")) {
+          inputEl.removeAttribute("readonly");
+        }
+        const visible = usesMaskClass
+          ? inputEl.classList.contains("password-mask")
+          : inputEl.type === "password";
+        if (usesMaskClass) {
+          inputEl.classList.toggle("password-mask");
+        } else {
+          inputEl.type = visible ? "text" : "password";
+        }
+        buttonEl.setAttribute("aria-label", visible ? "Hide password" : "Show password");
+        buttonEl.setAttribute("title", visible ? "Hide password" : "Show password");
+        setPasswordToggleIcon(buttonEl, visible);
+        inputEl.focus();
+      });
+    }
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = emailEl.value.trim();
+      const role = String(roleEl.value || "").trim();
+      const password = passwordEl.value;
+      const rememberMe = Boolean(rememberMeEl.checked);
+      const firstName = firstNameEl.value.trim();
+      const lastName = lastNameEl.value.trim();
+      const fullName = `${firstName} ${lastName}`.trim();
+      const confirmPassword = confirmPasswordEl.value;
+
+      authErrorEl.textContent = "";
+      clearFieldErrors();
+      const hasMissingFirstName = authMode === "create" && !firstName;
+      const hasMissingLastName = authMode === "create" && !lastName;
+      const hasMissingConfirmPassword = authMode === "create" && !confirmPassword;
+      if (!email) markFieldError(emailEl, "Email is required.");
+      if (!role) markFieldError(roleEl, "Role is required.");
+      if (!password) markFieldError(passwordEl, "Password is required.");
+      if (hasMissingFirstName) markFieldError(firstNameEl, "First name is required.");
+      if (hasMissingLastName) markFieldError(lastNameEl, "Last name is required.");
+      if (hasMissingConfirmPassword) markFieldError(confirmPasswordEl, "Confirm password is required.");
+      if (!email || !password || !role || hasMissingFirstName || hasMissingLastName || hasMissingConfirmPassword) {
+        authErrorEl.textContent = "";
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        markFieldError(emailEl, "Please enter a valid email address.");
+        authErrorEl.textContent = "";
+        return;
+      }
+      if (authMode === "create") {
+        const localPart = String(email.split("@")[0] || "");
+        if (!/[A-Za-z]/.test(localPart)) {
+          markFieldError(emailEl, "Email must include at least one letter before @.");
+          authErrorEl.textContent = "";
+          return;
+        }
+      }
+      if (authMode === "create" && role === "admin") {
+        markFieldError(roleEl, "Selected role cannot self-register.");
+        authErrorEl.textContent = "";
+        return;
+      }
+      if (authMode === "create" && !STRONG_PASSWORD_REGEX.test(password)) {
+        markFieldError(passwordEl, STRONG_PASSWORD_MESSAGE);
+        authErrorEl.textContent = "";
+        return;
+      }
+      if (authMode === "create" && password !== confirmPassword) {
+        markFieldError(passwordEl, "Passwords do not match.");
+        markFieldError(confirmPasswordEl, "Passwords do not match.");
+        authErrorEl.textContent = "";
+        return;
+      }
+
+      setFormDisabled(true);
+      try {
+        const url = authMode === "create" ? "/auth/register" : "/auth/login";
+        const body = authMode === "create"
+          ? { full_name: fullName, email, role, password, remember_me: rememberMe }
+          : { email, role, password, remember_me: rememberMe };
+        const resp = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (!resp.ok) {
+          let msg = authMode === "create"
+            ? "Unable to create account."
+            : "Login failed. Check your credentials and try again.";
+          if (authMode === "create" && resp.status === 404) {
+            msg = "Create account endpoint not found. Restart backend with latest code.";
+          }
+          try {
+            const err = await resp.json();
+            if (err && typeof err.detail === "string" && err.detail.trim()) {
+              msg = err.detail;
+            }
+          } catch (_) {
+            // keep fallback message
+          }
+          const lowered = String(msg || "").toLowerCase();
+          if (authMode === "create" && lowered.includes("role") && lowered.includes("self-register")) {
+            markFieldError(roleEl, msg);
+            authErrorEl.textContent = "";
+            return;
+          }
+          authErrorEl.textContent = msg;
+          return;
+        }
+        const data = await resp.json();
+        const latestUser = data?.user && typeof data.user === "object" ? data.user : {};
+        const latestEmail = String(latestUser.email || email).trim().toLowerCase() || email;
+        const latestRole = String(latestUser.role || role).trim() || role;
+        const latestFullName = String(latestUser.full_name || fullName).trim() || fullName;
+        upsertSavedLoginProfile({
+          email: latestEmail,
+          role: latestRole,
+          remember_me: rememberMe,
+          full_name: latestFullName,
+          password,
+        });
+        window.location.href = "/dashboard";
+      } catch (_) {
+        authErrorEl.textContent = "Unable to reach server. Please try again.";
+      } finally {
+        setFormDisabled(false);
+      }
+    });
+
+    modeSignInBtn.addEventListener("click", () => setMode("signin"));
+    modeCreateBtn.addEventListener("click", () => setMode("create"));
+    emailEl.addEventListener("input", () => clearSingleFieldError(emailEl));
+    roleEl.addEventListener("change", () => clearSingleFieldError(roleEl));
+    roleTriggerEl.addEventListener("click", () => {
+      const willOpen = !roleMenuEl.classList.contains("is-open");
+      closeRoleMenu();
+      if (willOpen) {
+        roleMenuEl.classList.add("is-open");
+        roleTriggerEl.setAttribute("aria-expanded", "true");
+      }
+    });
+    roleMenuEl.addEventListener("click", (e) => {
+      const item = e.target.closest("[data-value]");
+      if (!item) return;
+      const value = String(item.getAttribute("data-value") || "").trim();
+      if (!value) return;
+      roleEl.value = value;
+      syncRoleTriggerText();
+      clearSingleFieldError(roleEl);
+      closeRoleMenu();
+      roleEl.dispatchEvent(new Event("change"));
+    });
+    passwordEl.addEventListener("input", () => clearSingleFieldError(passwordEl));
+    firstNameEl.addEventListener("input", () => clearSingleFieldError(firstNameEl));
+    lastNameEl.addEventListener("input", () => clearSingleFieldError(lastNameEl));
+    firstNameEl.addEventListener("focus", () => {
+      if (firstNameEl.hasAttribute("readonly")) setTimeout(() => firstNameEl.removeAttribute("readonly"), 0);
+    });
+    firstNameEl.addEventListener("pointerdown", () => {
+      if (firstNameEl.hasAttribute("readonly")) firstNameEl.removeAttribute("readonly");
+    });
+    lastNameEl.addEventListener("focus", () => {
+      if (lastNameEl.hasAttribute("readonly")) setTimeout(() => lastNameEl.removeAttribute("readonly"), 0);
+    });
+    lastNameEl.addEventListener("pointerdown", () => {
+      if (lastNameEl.hasAttribute("readonly")) lastNameEl.removeAttribute("readonly");
+    });
+    confirmPasswordEl.addEventListener("input", () => clearSingleFieldError(confirmPasswordEl));
+    wirePasswordToggle(togglePasswordBtn, passwordEl, true);
+    wirePasswordToggle(toggleConfirmPasswordBtn, confirmPasswordEl, true);
+    passwordEl.addEventListener("focus", () => {
+      if (passwordEl.hasAttribute("readonly")) {
+        passwordEl.removeAttribute("readonly");
+      }
+    });
+    passwordEl.addEventListener("pointerdown", () => {
+      if (passwordEl.hasAttribute("readonly")) {
+        passwordEl.removeAttribute("readonly");
+      }
+    });
+    roleEl.addEventListener("change", () => {
+      const roleHelp = document.getElementById("roleHelp");
+      roleHelp.classList.toggle("is-hidden", !(authMode === "create" && roleEl.value === "admin"));
+    });
+    document.addEventListener("click", (e) => {
+      if (!roleSelectShellEl || roleSelectShellEl.contains(e.target)) return;
+      closeRoleMenu();
+    });
+    document.addEventListener("click", (e) => {
+      const wrap = emailEl?.closest(".email-suggest-wrap");
+      if (!wrap || wrap.contains(e.target)) return;
+      closeSavedEmailSuggestions();
+    });
+    emailEl.addEventListener("change", () => applySavedProfile(emailEl.value));
+    emailEl.addEventListener("blur", () => {
+      applySavedProfile(emailEl.value);
+      setTimeout(closeSavedEmailSuggestions, 120);
+    });
+    emailEl.addEventListener("input", () => {
+      if (authMode !== "signin") {
+        closeSavedEmailSuggestions();
+        return;
+      }
+      renderSavedEmailSuggestions(emailEl.value);
+    });
+    emailEl.addEventListener("focus", () => {
+      if (emailEl.hasAttribute("readonly")) {
+        // Remove readonly only after focus to reduce browser account chooser prompts.
+        setTimeout(() => emailEl.removeAttribute("readonly"), 0);
+      }
+      if (authMode !== "signin") {
+        closeSavedEmailSuggestions();
+        return;
+      }
+      renderSavedEmailSuggestions(emailEl.value);
+    });
+    emailEl.addEventListener("pointerdown", () => {
+      if (emailEl.hasAttribute("readonly")) {
+        emailEl.removeAttribute("readonly");
+      }
+      closeSavedEmailSuggestions();
+    });
+    savedEmailListEl.addEventListener("mousedown", (e) => {
+      const btn = e.target.closest(".email-suggestion-item");
+      if (!btn) return;
+      const selected = String(btn.getAttribute("data-email") || "").trim();
+      const selectedRole = String(btn.getAttribute("data-role") || "").trim();
+      if (!selected) return;
+      emailEl.value = selected;
+      if (selectedRole) {
+        roleEl.value = selectedRole;
+        syncRoleTriggerText();
+      }
+      applySavedProfile(selected);
+      closeSavedEmailSuggestions();
+      emailEl.focus();
+    });
+    setMode("signin");
+    renderRoleMenu();
+    syncRoleTriggerText();
+    clearSavedLoginProfiles();
+    consumeLogoutClearFlag();
+    clearCredentialFields();
+    window.addEventListener("pageshow", clearCredentialFields);
+  </script>
+</body>
+</html>
+
+
